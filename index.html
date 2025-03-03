@@ -556,27 +556,27 @@
                     <h2>Project Summary</h2>
                     <div class="summary-item">
                         <div class="label">Main Flooring Subtotal:</div>
-                        <div class="value" id="main-subtotal">0.00 RM</div>
+                        <div class="value" id="main-subtotal">RM 0.00</div>
                     </div>
                     <div class="summary-item">
                         <div class="label">Self-Leveling Subtotal:</div>
-                        <div class="value" id="level-subtotal">0.00 RM</div>
+                        <div class="value" id="level-subtotal">RM 0.00</div>
                     </div>
                     <div class="summary-item">
                         <div class="label">Skirting Subtotal:</div>
-                        <div class="value" id="skirting-subtotal">0.00 RM</div>
+                        <div class="value" id="skirting-subtotal">RM 0.00</div>
                     </div>
                     <div class="summary-item">
                         <div class="label">Total (Before Profit):</div>
-                        <div class="value" id="total-before-profit">0.00 RM</div>
+                        <div class="value" id="total-before-profit">RM 0.00</div>
                     </div>
                     <div class="summary-item">
                         <div class="label">Profit (15%):</div>
-                        <div class="value" id="profit-amount">0.00 RM</div>
+                        <div class="value" id="profit-amount">RM 0.00</div>
                     </div>
                     <div class="summary-item total">
                         <div class="label">Grand Total:</div>
-                        <div class="value" id="grand-total">0.00 RM</div>
+                        <div class="value" id="grand-total">RM 0.00</div>
                     </div>
                 </div>
                 
@@ -590,19 +590,19 @@
                     </div>
                     <div class="rate-item">
                         <div class="label">Main Flooring Rate:</div>
-                        <div class="value" id="main-rate">0.00 RM/sqft</div>
+                        <div class="value" id="main-rate">RM 0.00/sqft</div>
                     </div>
                     <div class="rate-item">
                         <div class="label">Self-Leveling Rate:</div>
-                        <div class="value" id="level-rate">0.00 RM/sqft</div>
+                        <div class="value" id="level-rate">RM 0.00/sqft</div>
                     </div>
                     <div class="rate-item">
                         <div class="label">Skirting Rate:</div>
-                        <div class="value" id="skirting-rate">0.00 RM/frun</div>
+                        <div class="value" id="skirting-rate">RM 0.00/frun</div>
                     </div>
                     <div class="rate-item">
                         <div class="label">Total Rate:</div>
-                        <div class="value" id="total-rate">0.00 RM/sqft</div>
+                        <div class="value" id="total-rate">RM 0.00/sqft</div>
                     </div>
                 </div>
             </div>
@@ -745,7 +745,7 @@
                     element.style.color = 'var(--accent-color)';
                     
                     // Set the new value
-                    element.textContent = formatCurrency(newValue) + ' RM';
+                    element.textContent = 'RM ' + formatCurrency(newValue);
                     
                     // Reset styles after animation
                     setTimeout(() => {
@@ -753,7 +753,7 @@
                         element.style.color = '';
                     }, 500);
                 } else {
-                    element.textContent = formatCurrency(newValue) + ' RM';
+                    element.textContent = 'RM ' + formatCurrency(newValue);
                 }
             }
             
@@ -774,10 +774,10 @@
                 const totalArea = parseFloat(document.getElementById('total-area').value) || 0;
                 
                 if (totalArea === 0) {
-                    document.getElementById('main-rate').textContent = '0.00 RM/sqft';
-                    document.getElementById('level-rate').textContent = '0.00 RM/sqft';
-                    document.getElementById('skirting-rate').textContent = '0.00 RM/sqft';
-                    document.getElementById('total-rate').textContent = '0.00 RM/sqft';
+                    document.getElementById('main-rate').textContent = 'RM 0.00/sqft';
+                    document.getElementById('level-rate').textContent = 'RM 0.00/sqft';
+                    document.getElementById('skirting-rate').textContent = 'RM 0.00/frun';
+                    document.getElementById('total-rate').textContent = 'RM 0.00/sqft';
                     return;
                 }
                 
@@ -816,7 +816,8 @@
                     element.style.color = 'var(--accent-color)';
                     
                     // Set the new value
-                    element.textContent = formatCurrency(newRate) + ' RM/sqft';
+                    const unit = elementId === 'skirting-rate' ? '/frun' : '/sqft';
+                    element.textContent = 'RM ' + formatCurrency(newRate) + unit;
                     
                     // Reset styles after animation
                     setTimeout(() => {
@@ -824,7 +825,8 @@
                         element.style.color = '';
                     }, 500);
                 } else {
-                    element.textContent = formatCurrency(newRate) + ' RM/sqft';
+                    const unit = elementId === 'skirting-rate' ? '/frun' : '/sqft';
+                    element.textContent = 'RM ' + formatCurrency(newRate) + unit;
                 }
             }
             
