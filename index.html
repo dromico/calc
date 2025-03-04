@@ -379,6 +379,7 @@
                         <h2>Main Flooring Installation</h2>
                         <div class="section-buttons">
                             <button class="btn btn-reset" id="reset-main">Reset</button>
+                            <button class="btn" onclick="addNewRow('mainFlooring')">Add Item</button>
                         </div>
                     </div>
                     <div class="section-content">
@@ -443,7 +444,12 @@
                                 <tr>
                                     <td>Commission</td>
                                     <td><input type="number" class="qty" value="0" data-item="comm"></td>
-                                    <td><input type="number" class="cost" value="0" data-item="comm"></td>
+                                    <td>
+                                        <select class="cost commission-select" data-item="comm" style="width: 100%; padding: 0.5rem; border: 1px solid #ced4da; border-radius: 5px;">
+                                            <option value="0.30">0.30</option>
+                                            <option value="0.50">0.50</option>
+                                        </select>
+                                    </td>
                                     <td class="calculated total-cost" id="comm-total">0.00</td>
                                 </tr>
                             </tbody>
@@ -456,6 +462,7 @@
                         <h2>Self-Leveling</h2>
                         <div class="section-buttons">
                             <button class="btn btn-reset" id="reset-level">Reset</button>
+                            <button class="btn" onclick="addNewRow('selfLeveling')">Add Item</button>
                             <span class="collapse-icon">▼</span>
                         </div>
                     </div>
@@ -504,6 +511,7 @@
                         <h2>Skirting</h2>
                         <div class="section-buttons">
                             <button class="btn btn-reset" id="reset-skirting">Reset</button>
+                            <button class="btn" onclick="addNewRow('skirtingTable')">Add Item</button>
                             <span class="collapse-icon">▼</span>
                         </div>
                     </div>
@@ -610,7 +618,52 @@
     </div>
 
     <script>
+        // Function to add new row to a section
+        function addNewRow(sectionId) {
+            const tbody = document.querySelector(`#${sectionId} tbody`);
+            const newRow = document.createElement('tr');
+            
+            newRow.innerHTML = `
+                <td><input type="text" class="item-name" style="width: 100%; padding: 0.5rem; border: 1px solid #ced4da; border-radius: 5px;" placeholder="Item Name"></td>
+                <td><input type="number" class="qty" value="0" data-item="custom-${Date.now()}"></td>
+                <td><input type="number" class="cost" value="0" data-item="custom-${Date.now()}"></td>
+                <td class="calculated total-cost" id="custom-${Date.now()}-total">0.00</td>
+                <td><button onclick="deleteRow(this)" class="btn btn-reset" style="margin: 0;">Delete</button></td>
+            `;
+            
+            tbody.appendChild(newRow);
+            
+            // Add event listeners to new inputs
+            const newInputs = newRow.querySelectorAll('input.qty, input.cost');
+            newInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    updateItemTotal(this);
+                    calculateAll();
+                });
+            });
+            
+            // Update data-labels for mobile view
+            const headerText = document.querySelector(`#${sectionId} thead tr`).querySelectorAll('th');
+            newRow.querySelectorAll('td').forEach((cell, index) => {
+                cell.setAttribute('data-label', headerText[index].textContent);
+            });
+        }
+        
+        // Function to delete a row
+        function deleteRow(button) {
+            const row = button.closest('tr');
+            row.remove();
+            calculateAll();
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
+            // Add event listener for commission select
+            document.querySelectorAll('.commission-select').forEach(select => {
+                select.addEventListener('change', function() {
+                    updateItemTotal(this);
+                    calculateAll();
+                });
+            });
             // Get all input elements
             const inputs = document.querySelectorAll('input.qty, input.cost');
             const calculateBtn = document.getElementById('calculate-btn');
@@ -666,7 +719,16 @@
                 const itemId = inputElement.dataset.item;
                 const row = inputElement.closest('tr');
                 const qty = parseFloat(row.querySelector('.qty').value) || 0;
-                const cost = parseFloat(row.querySelector('.cost').value) || 0;
+                let cost;
+                
+                // Check if this is a commission select or regular cost input
+                const costSelect = row.querySelector('.commission-select');
+                if (costSelect) {
+                    cost = parseFloat(costSelect.value) || 0;
+                } else {
+                    cost = parseFloat(row.querySelector('.cost').value) || 0;
+                }
+                
                 const total = qty * cost;
                 
                 // Update the total cell with animation
@@ -1238,7 +1300,22 @@
                 }
                 
                 const qty = parseFloat(row.querySelector('.qty').value) || 0;
-                const cost = parseFloat(row.querySelector('.cost').value) || 0;
+                let cost;
+                
+                // Check if this is a commission select or regular cost input
+                const costSelect = row.querySelector('.commission-select');
+                if (costSelect) {
+                    cost = parseFloat(costSelect.value) || 0;
+                } else {
+                    const costInput = row.querySelector('.cost');
+                    cost = parseFloat(costInput?.value) || 0;
+                }
+                
+                // Get item name from input if it exists
+                const nameInput = firstCell.querySelector('.item-name');
+                if (nameInput) {
+                    name = nameInput.value.trim() || 'Custom Item';
+                }
                 
                 // Only include items with both quantity and cost
                 if (qty > 0 && cost > 0) {
